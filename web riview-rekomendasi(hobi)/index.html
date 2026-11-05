@@ -1,0 +1,1504 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Semarang Cafe Hopping Journal</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              coffee: {
+                50: "#FAF7F2",
+                100: "#F3EBE1",
+                200: "#E5D5C3",
+                300: "#D5BC9F",
+                400: "#C29F79",
+                500: "#A98055",
+                600: "#8C633C",
+                700: "#6E492B",
+                800: "#4E321B",
+                900: "#2F1B0D",
+              },
+            },
+            fontFamily: {
+              sans: ["Plus Jakarta Sans", "sans-serif"],
+              serif: ["Playfair Display", "serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #faf7f2;
+      }
+      .font-serif {
+        font-family: "Playfair Display", serif;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #faf7f2;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #d5bc9f;
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #8c633c;
+      }
+      .backdrop-blur-md {
+        backdrop-filter: blur(12px);
+      }
+    </style>
+  </head>
+  <body
+    class="text-stone-800 min-h-screen flex flex-col antialiased selection:bg-amber-200 selection:text-amber-900"
+  >
+    <!-- Toast Notification Container -->
+    <div
+      id="toastContainer"
+      class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"
+    ></div>
+
+    <!-- Header / Navbar -->
+    <header
+      class="sticky top-0 z-30 bg-[#FAF7F2]/90 backdrop-blur-md border-b border-stone-200/80 transition-all"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20 gap-4">
+          <!-- Brand Logo -->
+          <div
+            class="flex items-center gap-3 cursor-pointer"
+            onclick="resetFilters()"
+          >
+            <div
+              class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-coffee-800 to-amber-700 flex items-center justify-center text-white shadow-md shadow-coffee-800/20 transform hover:scale-105 transition-transform"
+            >
+              <i class="fa-solid fa-mug-saucer text-xl"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h1
+                  class="font-serif text-xl sm:text-2xl font-bold text-coffee-900 tracking-tight leading-none"
+                >
+                  Semarang Cafe Journal
+                </h1>
+                <span
+                  class="hidden md:inline-block bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider"
+                  >Spotlight</span
+                >
+              </div>
+              <p class="text-xs text-stone-500 font-medium mt-0.5">
+                Panduan & Review Kedai Kopi Terbaik Kota Semarang
+              </p>
+            </div>
+          </div>
+
+          <!-- Desktop Quick Actions -->
+          <div class="hidden md:flex items-center gap-3">
+            <button
+              id="bookmarkFilterBtn"
+              onclick="toggleFavoritesOnly()"
+              class="px-4 py-2 rounded-full border border-stone-300 text-stone-700 bg-white hover:bg-stone-50 transition-all text-sm font-semibold flex items-center gap-2 shadow-sm"
+            >
+              <i
+                id="bookmarkFilterIcon"
+                class="fa-regular fa-bookmark text-amber-600"
+              ></i>
+              <span>Simpanan (<span id="bookmarkCount">0</span>)</span>
+            </button>
+            <button
+              onclick="openAddModal()"
+              class="px-5 py-2.5 rounded-full bg-coffee-800 hover:bg-coffee-900 text-white transition-all text-sm font-semibold flex items-center gap-2 shadow-md shadow-coffee-800/20 transform hover:-translate-y-0.5"
+            >
+              <i class="fa-solid fa-plus text-amber-300"></i>
+              <span>Tulis Review Cafe</span>
+            </button>
+          </div>
+
+          <!-- Mobile Action Button -->
+          <div class="flex md:hidden items-center gap-2">
+            <button
+              onclick="toggleFavoritesOnly()"
+              class="p-2.5 rounded-full bg-white border border-stone-200 text-stone-700 relative"
+            >
+              <i
+                id="bookmarkFilterIconMobile"
+                class="fa-regular fa-bookmark text-amber-600"
+              ></i>
+              <span
+                id="bookmarkCountBadge"
+                class="absolute -top-1 -right-1 bg-amber-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold"
+                >0</span
+              >
+            </button>
+            <button
+              onclick="openAddModal()"
+              class="p-2.5 rounded-full bg-coffee-800 text-white shadow-md"
+            >
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main
+      class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8"
+    >
+      <!-- Hero Banner -->
+      <section
+        class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-coffee-900 via-coffee-800 to-amber-950 text-white p-6 sm:p-10 shadow-xl"
+      >
+        <!-- Decorative Elements -->
+        <div
+          class="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"
+        ></div>
+        <div
+          class="absolute bottom-0 left-1/3 -mb-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"
+        ></div>
+
+        <div class="relative z-10 max-w-2xl space-y-4">
+          <div
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-semibold backdrop-blur-sm"
+          >
+            <i class="fa-solid fa-compass text-amber-400"></i> Eksplorasi
+            Kuliner Semarang
+          </div>
+          <h2
+            class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-amber-50"
+          >
+            Temukan Tempat Ngopi & WFC Nyaman di Semarang.
+          </h2>
+          <p class="text-stone-300 text-sm sm:text-base leading-relaxed">
+            Dari nuansa vintage arsitektur kolonial Kota Lama hingga kafe taman
+            tropis kekinian di kawasan Candi & Marina. Temukan racikan espresso
+            terbaik dan suasana yang pas!
+          </p>
+
+          <!-- Stat Pills -->
+          <div
+            class="pt-2 flex flex-wrap gap-4 sm:gap-6 text-xs sm:text-sm font-medium text-stone-300"
+          >
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-store text-amber-400"></i>
+              <span id="statTotalCafes">6 Cafe Terdaftar</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-star text-amber-400"></i>
+              <span>Rating Rata-rata 4.8★</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-wifi text-emerald-400"></i>
+              <span>Spot WFC Teruji</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Search & Control Bar -->
+      <section class="space-y-4">
+        <div
+          class="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center"
+        >
+          <!-- Search Input -->
+          <div class="relative flex-1">
+            <i
+              class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-stone-400"
+            ></i>
+            <input
+              type="text"
+              id="searchInput"
+              oninput="handleSearch()"
+              placeholder="Cari nama cafe, area (ex: Kota Lama, Tembalang, Candi), atau fasilitas..."
+              class="w-full pl-11 pr-10 py-3.5 bg-white rounded-2xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-coffee-600 focus:border-transparent text-sm shadow-sm transition-all placeholder:text-stone-400"
+            />
+            <button
+              id="clearSearchBtn"
+              onclick="clearSearch()"
+              class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 p-1"
+            >
+              <i class="fa-solid fa-circle-xmark"></i>
+            </button>
+          </div>
+
+          <!-- Sort Control -->
+          <div
+            class="flex items-center gap-2 self-end lg:self-auto w-full lg:w-auto"
+          >
+            <label
+              for="sortSelect"
+              class="text-xs font-bold text-stone-500 uppercase tracking-wider whitespace-nowrap"
+              >Urutkan:</label
+            >
+            <select
+              id="sortSelect"
+              onchange="handleSort()"
+              class="w-full lg:w-48 bg-white border border-stone-200 rounded-xl px-3 py-3 text-sm font-semibold text-stone-700 focus:outline-none focus:ring-2 focus:ring-coffee-600 shadow-sm cursor-pointer"
+            >
+              <option value="rating-desc">Rating Tertinggi ⭐</option>
+              <option value="reviews-desc">Paling Banyak Diulas</option>
+              <option value="price-asc">Harga Terjangkau</option>
+              <option value="name-asc">Nama (A-Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Vibe Filter Pills -->
+        <div
+          class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none pt-1"
+          id="vibeFilterContainer"
+        >
+          <button
+            onclick="setVibeFilter('All')"
+            data-vibe="All"
+            class="vibe-btn active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all bg-coffee-800 text-white shadow-sm"
+          >
+            <i class="fa-solid fa-border-all mr-1.5"></i> Semua Vibe
+          </button>
+          <button
+            onclick="setVibeFilter('Aesthetic')"
+            data-vibe="Aesthetic"
+            class="vibe-btn px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all bg-white text-stone-600 hover:bg-stone-100 border border-stone-200"
+          >
+            📸 Aesthetic / Insta-worthy
+          </button>
+          <button
+            onclick="setVibeFilter('Work-friendly')"
+            data-vibe="Work-friendly"
+            class="vibe-btn px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all bg-white text-stone-600 hover:bg-stone-100 border border-stone-200"
+          >
+            💻 Work-friendly (WFC)
+          </button>
+          <button
+            onclick="setVibeFilter('Vintage')"
+            data-vibe="Vintage"
+            class="vibe-btn px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all bg-white text-stone-600 hover:bg-stone-100 border border-stone-200"
+          >
+            🏛️ Vintage / Kolonial
+          </button>
+          <button
+            onclick="setVibeFilter('Outdoor/Garden')"
+            data-vibe="Outdoor/Garden"
+            class="vibe-btn px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all bg-white text-stone-600 hover:bg-stone-100 border border-stone-200"
+          >
+            🌿 Outdoor & Garden
+          </button>
+        </div>
+      </section>
+
+      <!-- Active Filter Indicator -->
+      <div
+        id="filterStatus"
+        class="hidden items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5 text-xs text-amber-900"
+      >
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-filter text-amber-600"></i>
+          <span id="filterStatusText">Menampilkan hasil filter...</span>
+        </div>
+        <button
+          onclick="resetFilters()"
+          class="font-bold underline hover:text-amber-700"
+        >
+          Reset Filter
+        </button>
+      </div>
+
+      <!-- Cafe Cards Grid -->
+      <section
+        id="cafeGrid"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        <!-- Dynamic Cafe Cards will be rendered here -->
+      </section>
+
+      <!-- Empty State -->
+      <div
+        id="emptyState"
+        class="hidden flex-col items-center justify-center py-16 px-4 text-center bg-white rounded-3xl border border-dashed border-stone-300"
+      >
+        <div
+          class="w-20 h-20 bg-stone-100 text-stone-400 rounded-full flex items-center justify-center text-3xl mb-4"
+        >
+          <i class="fa-solid fa-mug-hot"></i>
+        </div>
+        <h3 class="font-serif text-xl font-bold text-stone-800 mb-1">
+          Cafe Tidak Ditemukan
+        </h3>
+        <p class="text-stone-500 text-sm max-w-md mb-6">
+          Tidak ada rekomendasi cafe yang sesuai dengan kriteria pencarian atau
+          filter pilihanmu.
+        </p>
+        <button
+          onclick="resetFilters()"
+          class="px-5 py-2.5 rounded-full bg-coffee-800 text-white text-sm font-semibold hover:bg-coffee-900 transition-all shadow-md"
+        >
+          Tampilkan Semua Cafe
+        </button>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer
+      class="mt-16 bg-coffee-900 text-stone-300 border-t border-coffee-800 py-10"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-9 h-9 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold"
+          >
+            <i class="fa-solid fa-mug-saucer"></i>
+          </div>
+          <div>
+            <h4 class="font-serif font-bold text-white text-base">
+              Semarang Cafe Hopping Journal
+            </h4>
+            <p class="text-xs text-stone-400">
+              Komunitas Pencinta Kopi & Ruang Ketemu Kota Semarang
+            </p>
+          </div>
+        </div>
+        <p class="text-xs text-stone-400 text-center md:text-right">
+          Dibuat dengan rasa cinta pada racikan kopi lokal. &copy; 2026 Semarang
+          Cafe Hopping.
+        </p>
+      </div>
+    </footer>
+
+    <!-- CAFE DETAIL MODAL -->
+    <div
+      id="detailModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300"
+    >
+      <div
+        class="bg-white w-full max-w-2xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col transform scale-95 transition-transform duration-300"
+        id="detailModalContent"
+      >
+        <!-- Modal Header / Image Banner -->
+        <div class="relative h-60 sm:h-72 w-full shrink-0">
+          <img
+            id="detailImage"
+            src=""
+            alt="Cafe Image"
+            class="w-full h-full object-cover"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
+          ></div>
+
+          <!-- Close Button -->
+          <button
+            onclick="closeDetailModal()"
+            class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md transition-all"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+
+          <!-- Vibe Tag Badge -->
+          <div class="absolute top-4 left-4">
+            <span
+              id="detailVibeTag"
+              class="px-3 py-1 rounded-full bg-white/90 text-coffee-900 text-xs font-bold backdrop-blur-md shadow-md"
+            ></span>
+          </div>
+
+          <!-- Title Overlay -->
+          <div class="absolute bottom-4 left-6 right-6 text-white space-y-1">
+            <div class="flex items-center gap-2">
+              <span
+                id="detailAreaBadge"
+                class="bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase"
+              ></span>
+              <div
+                class="flex items-center gap-1 text-amber-300 text-xs font-bold"
+              >
+                <i class="fa-solid fa-star"></i>
+                <span id="detailRating"></span>
+              </div>
+            </div>
+            <h3
+              id="detailName"
+              class="font-serif text-2xl sm:text-3xl font-bold text-white"
+            ></h3>
+          </div>
+        </div>
+
+        <!-- Modal Body (Scrollable) -->
+        <div class="p-6 overflow-y-auto space-y-6 flex-grow">
+          <!-- Quick Info Bar -->
+          <div
+            class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-3.5 bg-stone-50 rounded-2xl border border-stone-200 text-xs text-stone-600"
+          >
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-clock text-amber-600 text-sm"></i>
+              <div>
+                <p class="text-[10px] text-stone-400 font-bold uppercase">
+                  Jam Buka
+                </p>
+                <p id="detailHours" class="font-semibold text-stone-800"></p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-tag text-emerald-600 text-sm"></i>
+              <div>
+                <p class="text-[10px] text-stone-400 font-bold uppercase">
+                  Estimasi Harga
+                </p>
+                <p id="detailPrice" class="font-semibold text-stone-800"></p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 col-span-2 sm:col-span-1">
+              <i class="fa-solid fa-map-pin text-red-500 text-sm"></i>
+              <div>
+                <p class="text-[10px] text-stone-400 font-bold uppercase">
+                  Lokasi Area
+                </p>
+                <p
+                  id="detailAddress"
+                  class="font-semibold text-stone-800 truncate"
+                ></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Facility Badges -->
+          <div class="space-y-2">
+            <h4
+              class="text-xs font-bold uppercase text-stone-400 tracking-wider"
+            >
+              Fasilitas Utama
+            </h4>
+            <div id="detailFacilities" class="flex flex-wrap gap-2"></div>
+          </div>
+
+          <!-- Review Summary -->
+          <div class="space-y-2">
+            <h4
+              class="text-xs font-bold uppercase text-stone-400 tracking-wider"
+            >
+              Ringkasan Ulasan
+            </h4>
+            <div
+              class="p-4 bg-amber-50/60 border border-amber-200/60 rounded-2xl"
+            >
+              <p
+                id="detailReviewText"
+                class="text-sm text-stone-700 italic leading-relaxed"
+              ></p>
+            </div>
+          </div>
+
+          <!-- Signature Menu -->
+          <div class="space-y-2">
+            <h4
+              class="text-xs font-bold uppercase text-stone-400 tracking-wider"
+            >
+              Menu Favorit Rekomendasi
+            </h4>
+            <div id="detailSignatureMenu" class="flex flex-wrap gap-2"></div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div
+          class="p-4 border-t border-stone-200 bg-stone-50 flex items-center justify-between gap-3"
+        >
+          <button
+            id="modalBookmarkBtn"
+            onclick="toggleBookmarkFromModal()"
+            class="px-4 py-2.5 rounded-xl border border-stone-300 bg-white text-stone-700 text-xs font-bold hover:bg-stone-100 transition-all flex items-center gap-2"
+          >
+            <i id="modalBookmarkIcon" class="fa-regular fa-bookmark"></i>
+            <span id="modalBookmarkText">Simpan Cafe</span>
+          </button>
+          <a
+            id="mapsDirectionBtn"
+            href="#"
+            target="_blank"
+            rel="noopener"
+            class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-2 shadow-md"
+          >
+            <i class="fa-solid fa-location-arrow"></i> Buka Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD REVIEW MODAL -->
+    <div
+      id="addModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300"
+    >
+      <div
+        class="bg-white w-full max-w-xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col transform scale-95 transition-transform duration-300"
+        id="addModalContent"
+      >
+        <!-- Modal Header -->
+        <div
+          class="px-6 py-4 border-b border-stone-200 flex items-center justify-between bg-stone-50"
+        >
+          <div class="flex items-center gap-2.5">
+            <div
+              class="w-8 h-8 rounded-xl bg-coffee-800 text-white flex items-center justify-center text-sm"
+            >
+              <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+            <h3 class="font-serif text-lg font-bold text-coffee-900">
+              Tambah Ulasan Cafe Baru
+            </h3>
+          </div>
+          <button
+            onclick="closeAddModal()"
+            class="text-stone-400 hover:text-stone-700 transition-colors"
+          >
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Modal Form Body -->
+        <form
+          id="addCafeForm"
+          onsubmit="handleFormSubmit(event)"
+          class="p-6 overflow-y-auto space-y-4 flex-grow"
+        >
+          <!-- Cafe Name -->
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1"
+              >Nama Cafe *</label
+            >
+            <input
+              type="text"
+              id="formName"
+              required
+              placeholder="Contoh: Tekodeko Koffiehuis"
+              class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-coffee-600 focus:outline-none"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Area / Location -->
+            <div>
+              <label
+                class="block text-xs font-bold text-stone-700 uppercase mb-1"
+                >Area / Kawasan *</label
+              >
+              <input
+                type="text"
+                id="formArea"
+                required
+                placeholder="Contoh: Kota Lama, Tembalang"
+                class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-coffee-600 focus:outline-none"
+              />
+            </div>
+
+            <!-- Vibe Category -->
+            <div>
+              <label
+                class="block text-xs font-bold text-stone-700 uppercase mb-1"
+                >Kategori Vibe *</label
+              >
+              <select
+                id="formVibe"
+                required
+                class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-coffee-600 focus:outline-none bg-white cursor-pointer"
+              >
+                <option value="Aesthetic">Aesthetic / Insta-worthy</option>
+                <option value="Work-friendly">Work-friendly (WFC)</option>
+                <option value="Vintage">Vintage / Kolonial</option>
+                <option value="Outdoor/Garden">Outdoor & Garden</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- Rating -->
+            <div>
+              <label
+                class="block text-xs font-bold text-stone-700 uppercase mb-1"
+                >Rating Bintang *</label
+              >
+              <select
+                id="formRating"
+                required
+                class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-coffee-600 focus:outline-none bg-white"
+              >
+                <option value="5.0">5.0 ⭐ (Sempurna)</option>
+                <option value="4.8" selected>4.8 ⭐ (Sangat Bagus)</option>
+                <option value="4.5">4.5 ⭐ (Bagus)</option>
+                <option value="4.0">4.0 ⭐ (Cukup)</option>
+              </select>
+            </div>
+
+            <!-- Price Level -->
+            <div>
+              <label
+                class="block text-xs font-bold text-stone-700 uppercase mb-1"
+                >Range Harga *</label
+              >
+              <select
+                id="formPrice"
+                required
+                class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-coffee-600 focus:outline-none bg-white"
+              >
+                <option value="Rp 20k - 40k">Rp 20k - 40k (Murah)</option>
+                <option value="Rp 25k - 50k" selected>
+                  Rp 25k - 50k (Sedang)
+                </option>
+                <option value="Rp 40k - 100k">Rp 40k - 100k (Premium)</option>
+              </select>
+            </div>
+
+            <!-- Operating Hours -->
+            <div>
+              <label
+                class="block text-xs font-bold text-stone-700 uppercase mb-1"
+                >Jam Buka *</label
+              >
+              <input
+                type="text"
+                id="formHours"
+                required
+                placeholder="08:00 - 22:00 WIB"
+                class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-coffee-600 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <!-- Image URL -->
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1"
+              >URL Foto Cafe</label
+            >
+            <input
+              type="url"
+              id="formImage"
+              placeholder="https://images.unsplash.com/... (Kosongkan untuk otomatis)"
+              class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-coffee-600 focus:outline-none"
+            />
+          </div>
+
+          <!-- Signature Menu -->
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1"
+              >Menu Rekomendasi (Pisahkan koma)</label
+            >
+            <input
+              type="text"
+              id="formMenu"
+              placeholder="Contoh: Kopi Susu Aren, Croissant, Cold Brew"
+              class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-coffee-600 focus:outline-none"
+            />
+          </div>
+
+          <!-- Facilities Checklist -->
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-2"
+              >Fasilitas yang Tersedia</label
+            >
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <label
+                class="flex items-center gap-2 p-2 rounded-lg border border-stone-200 cursor-pointer hover:bg-stone-50"
+              >
+                <input
+                  type="checkbox"
+                  name="facilities"
+                  value="WiFi Kencang"
+                  checked
+                  class="rounded text-coffee-800 focus:ring-coffee-600"
+                />
+                <span>WiFi Kencang</span>
+              </label>
+              <label
+                class="flex items-center gap-2 p-2 rounded-lg border border-stone-200 cursor-pointer hover:bg-stone-50"
+              >
+                <input
+                  type="checkbox"
+                  name="facilities"
+                  value="Stopkontak Melimpah"
+                  checked
+                  class="rounded text-coffee-800 focus:ring-coffee-600"
+                />
+                <span>Stopkontak</span>
+              </label>
+              <label
+                class="flex items-center gap-2 p-2 rounded-lg border border-stone-200 cursor-pointer hover:bg-stone-50"
+              >
+                <input
+                  type="checkbox"
+                  name="facilities"
+                  value="Area AC Full"
+                  checked
+                  class="rounded text-coffee-800 focus:ring-coffee-600"
+                />
+                <span>Area AC</span>
+              </label>
+              <label
+                class="flex items-center gap-2 p-2 rounded-lg border border-stone-200 cursor-pointer hover:bg-stone-50"
+              >
+                <input
+                  type="checkbox"
+                  name="facilities"
+                  value="Outdoor Seating"
+                  class="rounded text-coffee-800 focus:ring-coffee-600"
+                />
+                <span>Outdoor</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Review Summary -->
+          <div>
+            <label class="block text-xs font-bold text-stone-700 uppercase mb-1"
+              >Ringkasan Ulasan Singkat *</label
+            >
+            <textarea
+              id="formReview"
+              required
+              rows="3"
+              placeholder="Ceritakan suasana, kualitas kopi, dan daya tarik utama cafe ini..."
+              class="w-full px-3.5 py-2.5 border border-stone-300 rounded-xl text-sm focus:ring-2 focus:ring-coffee-600 focus:outline-none resize-none"
+            ></textarea>
+          </div>
+
+          <!-- Modal Form Footer -->
+          <div
+            class="pt-4 flex items-center justify-end gap-3 border-t border-stone-200"
+          >
+            <button
+              type="button"
+              onclick="closeAddModal()"
+              class="px-5 py-2.5 rounded-xl border border-stone-300 text-stone-600 text-xs font-bold hover:bg-stone-100 transition-all"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2.5 rounded-xl bg-coffee-800 hover:bg-coffee-900 text-white text-xs font-bold transition-all shadow-md"
+            >
+              Simpan Ulasan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- JavaScript Application State & Logic -->
+    <script>
+      // Initial Dataset: Famous Cafes in Semarang
+      const defaultCafes = [
+        {
+          id: "spiegel-kota-lama",
+          name: "Spiegel Bar & Bistro",
+          area: "Kota Lama",
+          vibe: "Vintage",
+          rating: 4.8,
+          reviewsCount: 1420,
+          price: "Rp 40k - 120k",
+          hours: "10:00 - 23:00 WIB",
+          address: "Jl. Letjen Suprapto No.34, Kota Lama, Semarang",
+          image:
+            "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80",
+          facilities: [
+            "Bangunan Kolonial 1895",
+            "Area AC",
+            "Outdoor Seating",
+            "Live Music",
+            "Full Bar",
+          ],
+          signatureMenu: [
+            "Spiegel Espresso Tonic",
+            "Wagyu Beef Burger",
+            "Truffle Fries",
+          ],
+          review:
+            "Gedung cagar budaya tahun 1895 yang direnovasi amat memukau di jantung Kota Lama. Suasana kolonial yang kental, kopi artisanal berkualitas, dan hidangan Western/Indonesian super lezat.",
+        },
+        {
+          id: "antara-kata-tembalang",
+          name: "Antara Kata Coffee",
+          area: "Tembalang",
+          vibe: "Work-friendly",
+          rating: 4.7,
+          reviewsCount: 890,
+          price: "Rp 25k - 50k",
+          hours: "08:00 - 23:00 WIB",
+          address: "Jl. Sumurboto III No.8, Tembalang, Semarang",
+          image:
+            "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80",
+          facilities: [
+            "WiFi Kencang (100Mbps)",
+            "Stopkontak Melimpah",
+            "Area AC Quiet Zone",
+            "Parkir Luas",
+          ],
+          signatureMenu: ["Kopi Susu Antara", "Cinnamon Roll", "Es Aren Latte"],
+          review:
+            "Surga buat mahasiswa & pekerja remote (WFC). Stopkontak di setiap meja, kursi ergonomis, musik pengiring yang rileks, dan Es Kopi Susu Antara yang creamy pas di lidah.",
+        },
+        {
+          id: "tekodeko-koffiehuis",
+          name: "Tekodeko Koffiehuis",
+          area: "Kota Lama",
+          vibe: "Vintage",
+          rating: 4.6,
+          reviewsCount: 1100,
+          price: "Rp 20k - 45k",
+          hours: "09:00 - 22:00 WIB",
+          address: "Jl. Kepodang No.64, Kota Lama, Semarang",
+          image:
+            "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&w=800&q=80",
+          facilities: [
+            "Heritage Interior",
+            "Area AC",
+            "Balkon Outdoor",
+            "WiFi Kencang",
+          ],
+          signatureMenu: [
+            "Kopi Cheng Li",
+            "Es Kopi Djoeragan",
+            "Roti Bakar Tekodeko",
+          ],
+          review:
+            "Kafe bergaya Indische manis di lorong bersejarah Kota Lama. Menawarkan racikan Kopi Djoeragan serta seduhan manual brew khas Nusantara dengan suasana nostalgia hangat.",
+        },
+        {
+          id: "openaire-market",
+          name: "Openaire Market",
+          area: "Marina / Semarang Barat",
+          vibe: "Outdoor/Garden",
+          rating: 4.9,
+          reviewsCount: 650,
+          price: "Rp 35k - 100k",
+          hours: "10:00 - 22:00 WIB",
+          address: "Jl. Marina Raya No.88, Semarang Barat",
+          image:
+            "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
+          facilities: [
+            "Tropical Open Garden",
+            "Kid Friendly",
+            "WiFi",
+            "Area Outdoor Luas",
+            "Live Accoustic",
+          ],
+          signatureMenu: [
+            "Tropical Cold Brew",
+            "Passion Sparkler",
+            "Woodfired Pizza",
+          ],
+          review:
+            "Oasis hijau tropis ala Bali di pesisir Semarang. Area terbuka yang sangat luas dikelilingi pepohonan dan kolam hias. Sangat cocok untuk afternoon coffee time bersama teman dan keluarga.",
+        },
+        {
+          id: "eastman-coffee-house",
+          name: "Eastman Coffee House",
+          area: "Simpang Lima",
+          vibe: "Aesthetic",
+          rating: 4.8,
+          reviewsCount: 1580,
+          price: "Rp 35k - 90k",
+          hours: "07:00 - 22:00 WIB",
+          address: "Jl. Ahmad Yani No.140, Karangkidul, Semarang",
+          image:
+            "https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=800&q=80",
+          facilities: [
+            "Artisan Bakery",
+            "Area AC Classy",
+            "WiFi Kencang",
+            "All Day Breakfast",
+          ],
+          signatureMenu: [
+            "Eastman Flat White",
+            "Avocado Toast Sourdough",
+            "Almond Croissant",
+          ],
+          review:
+            "Pelopor Australian-style specialty coffee house di Semarang. Interior perpaduan kayu warm & classy, terkenal dengan sajian All-Day Breakfast harian dan pastry yang baru dipanggang.",
+        },
+        {
+          id: "tavera-candi-resto",
+          name: "Tavera Cafe & View",
+          area: "Candi / Semarang Selatan",
+          vibe: "Outdoor/Garden",
+          rating: 4.7,
+          reviewsCount: 520,
+          price: "Rp 30k - 75k",
+          hours: "11:00 - 23:00 WIB",
+          address: "Kawasan Candi Golf, Semarang Selatan",
+          image:
+            "https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=800&q=80",
+          facilities: [
+            "City View Malam Hari",
+            "Outdoor Terrace",
+            "WiFi",
+            "Spot Foto Panoramic",
+          ],
+          signatureMenu: [
+            "Candi Sunset Latte",
+            "Manual Brew Gayo",
+            "Platter Snack Box",
+          ],
+          review:
+            "Menikmati pemandangan city lights Semarang Atas sembari menyeruput kopi hangat. Udara sejuk khas perbukitan Candi menjadikan tempat ini favorit anak muda untuk nongkrong malam.",
+        },
+      ];
+
+      // State Management
+      let cafes = [];
+      let bookmarks = new Set();
+      let currentVibeFilter = "All";
+      let currentSearchQuery = "";
+      let currentSort = "rating-desc";
+      let showFavoritesOnly = false;
+      let activeSelectedCafeId = null;
+
+      // Initialize Application
+      document.addEventListener("DOMContentLoaded", () => {
+        loadStateFromStorage();
+        renderApp();
+      });
+
+      function loadStateFromStorage() {
+        // Load Cafes
+        const storedCafes = localStorage.getItem("semarang_cafes");
+        if (storedCafes) {
+          try {
+            cafes = JSON.parse(storedCafes);
+          } catch (e) {
+            cafes = [...defaultCafes];
+          }
+        } else {
+          cafes = [...defaultCafes];
+        }
+
+        // Load Bookmarks
+        const storedBookmarks = localStorage.getItem("semarang_cafe_bookmarks");
+        if (storedBookmarks) {
+          try {
+            bookmarks = new Set(JSON.parse(storedBookmarks));
+          } catch (e) {
+            bookmarks = new Set();
+          }
+        }
+      }
+
+      function saveStateToStorage() {
+        localStorage.setItem("semarang_cafes", JSON.stringify(cafes));
+        localStorage.setItem(
+          "semarang_cafe_bookmarks",
+          JSON.stringify([...bookmarks]),
+        );
+      }
+
+      // Render Master Function
+      function renderApp() {
+        updateStats();
+        renderCafeGrid();
+        updateBookmarkBadges();
+      }
+
+      function updateStats() {
+        document.getElementById("statTotalCafes").textContent =
+          `${cafes.length} Cafe Terdaftar`;
+      }
+
+      function updateBookmarkBadges() {
+        const count = bookmarks.size;
+        document.getElementById("bookmarkCount").textContent = count;
+        document.getElementById("bookmarkCountBadge").textContent = count;
+
+        const desktopIcon = document.getElementById("bookmarkFilterIcon");
+        const mobileIcon = document.getElementById("bookmarkFilterIconMobile");
+
+        if (showFavoritesOnly) {
+          desktopIcon.className = "fa-solid fa-bookmark text-amber-600";
+          mobileIcon.className = "fa-solid fa-bookmark text-amber-600";
+        } else {
+          desktopIcon.className = "fa-regular fa-bookmark text-amber-600";
+          mobileIcon.className = "fa-regular fa-bookmark text-amber-600";
+        }
+      }
+
+      // Render Cafe Cards
+      function renderCafeGrid() {
+        const grid = document.getElementById("cafeGrid");
+        const emptyState = document.getElementById("emptyState");
+        const filterStatus = document.getElementById("filterStatus");
+        const filterStatusText = document.getElementById("filterStatusText");
+
+        // Apply Filters
+        let filtered = cafes.filter((cafe) => {
+          // Vibe filter
+          if (currentVibeFilter !== "All" && cafe.vibe !== currentVibeFilter) {
+            return false;
+          }
+          // Favorites filter
+          if (showFavoritesOnly && !bookmarks.has(cafe.id)) {
+            return false;
+          }
+          // Search Query
+          if (currentSearchQuery.trim() !== "") {
+            const q = currentSearchQuery.toLowerCase();
+            const matchName = cafe.name.toLowerCase().includes(q);
+            const matchArea = cafe.area.toLowerCase().includes(q);
+            const matchVibe = cafe.vibe.toLowerCase().includes(q);
+            const matchMenu = cafe.signatureMenu.some((m) =>
+              m.toLowerCase().includes(q),
+            );
+            const matchFacility = cafe.facilities.some((f) =>
+              f.toLowerCase().includes(q),
+            );
+            return (
+              matchName || matchArea || matchVibe || matchMenu || matchFacility
+            );
+          }
+          return true;
+        });
+
+        // Apply Sorting
+        filtered.sort((a, b) => {
+          if (currentSort === "rating-desc") return b.rating - a.rating;
+          if (currentSort === "reviews-desc")
+            return b.reviewsCount - a.reviewsCount;
+          if (currentSort === "name-asc") return a.name.localeCompare(b.name);
+          if (currentSort === "price-asc")
+            return a.price.localeCompare(b.price);
+          return 0;
+        });
+
+        // Toggle Empty State & Status
+        if (filtered.length === 0) {
+          grid.innerHTML = "";
+          emptyState.classList.remove("hidden");
+          emptyState.classList.add("flex");
+        } else {
+          emptyState.classList.add("hidden");
+          emptyState.classList.remove("flex");
+
+          grid.innerHTML = filtered
+            .map((cafe) => {
+              const isBookmarked = bookmarks.has(cafe.id);
+              return `
+                        <div class="bg-white rounded-3xl border border-stone-200/80 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group hover:-translate-y-1">
+                            <!-- Card Image -->
+                            <div class="relative h-48 w-full overflow-hidden bg-stone-100 cursor-pointer" onclick="openDetailModal('${cafe.id}')">
+                                <img src="${cafe.image}" alt="${cafe.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80'">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80"></div>
+                                
+                                <!-- Vibe Badge -->
+                                <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-coffee-900 text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">
+                                    ${getVibeEmoji(cafe.vibe)} ${cafe.vibe}
+                                </span>
+
+                                <!-- Bookmark Button -->
+                                <button onclick="event.stopPropagation(); toggleBookmark('${cafe.id}')" title="Simpan ke favorit" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-stone-700 flex items-center justify-center transition-all shadow-md">
+                                    <i class="${isBookmarked ? "fa-solid text-amber-600" : "fa-regular"} fa-bookmark text-sm"></i>
+                                </button>
+
+                                <!-- Area Badge & Rating Overlay -->
+                                <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white">
+                                    <span class="bg-amber-500/90 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wider backdrop-blur-sm">
+                                        <i class="fa-solid fa-location-dot mr-1"></i>${cafe.area}
+                                    </span>
+                                    <div class="flex items-center gap-1 bg-black/40 px-2 py-0.5 rounded-md backdrop-blur-sm text-xs font-bold text-amber-300">
+                                        <i class="fa-solid fa-star"></i>
+                                        <span>${cafe.rating.toFixed(1)}</span>
+                                        <span class="text-[10px] text-stone-300 font-normal">(${cafe.reviewsCount})</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+                                <div class="space-y-2">
+                                    <h3 onclick="openDetailModal('${cafe.id}')" class="font-serif text-xl font-bold text-coffee-900 cursor-pointer hover:text-amber-700 transition-colors">
+                                        ${cafe.name}
+                                    </h3>
+                                    <p class="text-xs text-stone-500 line-clamp-2 leading-relaxed italic">
+                                        "${cafe.review}"
+                                    </p>
+                                </div>
+
+                                <!-- Facilities Pills -->
+                                <div class="flex flex-wrap gap-1.5 pt-1">
+                                    ${cafe.facilities
+                                      .slice(0, 3)
+                                      .map(
+                                        (f) => `
+                                        <span class="text-[10px] font-semibold bg-stone-100 text-stone-600 px-2 py-1 rounded-lg">
+                                            ${f}
+                                        </span>
+                                    `,
+                                      )
+                                      .join("")}
+                                    ${cafe.facilities.length > 3 ? `<span class="text-[10px] font-semibold bg-stone-100 text-stone-400 px-1.5 py-1 rounded-lg">+${cafe.facilities.length - 3}</span>` : ""}
+                                </div>
+
+                                <!-- Card Footer Info & CTA -->
+                                <div class="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
+                                    <div class="text-xs">
+                                        <span class="text-stone-400 font-medium block text-[10px] uppercase">Estimasi</span>
+                                        <span class="font-bold text-emerald-700">${cafe.price}</span>
+                                    </div>
+                                    <button onclick="openDetailModal('${cafe.id}')" class="px-4 py-2 rounded-xl bg-coffee-50 hover:bg-coffee-100 text-coffee-800 text-xs font-bold transition-colors flex items-center gap-1.5">
+                                        <span>Detail Cafe</span>
+                                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            })
+            .join("");
+        }
+
+        // Update Filter Status Banner
+        const activeFiltersCount =
+          (currentVibeFilter !== "All" ? 1 : 0) +
+          (currentSearchQuery ? 1 : 0) +
+          (showFavoritesOnly ? 1 : 0);
+        if (activeFiltersCount > 0) {
+          filterStatus.classList.remove("hidden");
+          filterStatus.classList.add("flex");
+
+          let text = `Menampilkan ${filtered.length} dari ${cafes.length} cafe`;
+          if (showFavoritesOnly) text += ` (Hanya Simpanan)`;
+          if (currentVibeFilter !== "All")
+            text += ` • Vibe: ${currentVibeFilter}`;
+          if (currentSearchQuery)
+            text += ` • Kata Kunci: "${currentSearchQuery}"`;
+          filterStatusText.textContent = text;
+        } else {
+          filterStatus.classList.add("hidden");
+        }
+      }
+
+      // Helper Emoji for Vibes
+      function getVibeEmoji(vibe) {
+        switch (vibe) {
+          case "Aesthetic":
+            return "📸";
+          case "Work-friendly":
+            return "💻";
+          case "Vintage":
+            return "🏛️";
+          case "Outdoor/Garden":
+            return "🌿";
+          default:
+            return "☕";
+        }
+      }
+
+      // Interaction Handlers
+      function setVibeFilter(vibe) {
+        currentVibeFilter = vibe;
+        document.querySelectorAll(".vibe-btn").forEach((btn) => {
+          if (btn.dataset.vibe === vibe) {
+            btn.className =
+              "vibe-btn active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all bg-coffee-800 text-white shadow-sm";
+          } else {
+            btn.className =
+              "vibe-btn px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all bg-white text-stone-600 hover:bg-stone-100 border border-stone-200";
+          }
+        });
+        renderCafeGrid();
+      }
+
+      function handleSearch() {
+        const input = document.getElementById("searchInput");
+        currentSearchQuery = input.value;
+        const clearBtn = document.getElementById("clearSearchBtn");
+        if (currentSearchQuery) {
+          clearBtn.classList.remove("hidden");
+        } else {
+          clearBtn.classList.add("hidden");
+        }
+        renderCafeGrid();
+      }
+
+      function clearSearch() {
+        document.getElementById("searchInput").value = "";
+        handleSearch();
+      }
+
+      function handleSort() {
+        currentSort = document.getElementById("sortSelect").value;
+        renderCafeGrid();
+      }
+
+      function toggleFavoritesOnly() {
+        showFavoritesOnly = !showFavoritesOnly;
+        if (showFavoritesOnly) {
+          showToast("Menampilkan daftar cafe tersimpan", "info");
+        }
+        updateBookmarkBadges();
+        renderCafeGrid();
+      }
+
+      function toggleBookmark(id) {
+        if (bookmarks.has(id)) {
+          bookmarks.delete(id);
+          showToast("Dihapus dari daftar simpanan", "neutral");
+        } else {
+          bookmarks.add(id);
+          showToast("Berhasil disimpan ke favorit! ❤️", "success");
+        }
+        saveStateToStorage();
+        updateBookmarkBadges();
+        renderCafeGrid();
+
+        if (activeSelectedCafeId === id) {
+          updateModalBookmarkButton(id);
+        }
+      }
+
+      function resetFilters() {
+        currentVibeFilter = "All";
+        currentSearchQuery = "";
+        showFavoritesOnly = false;
+        document.getElementById("searchInput").value = "";
+        document.getElementById("clearSearchBtn").classList.add("hidden");
+        setVibeFilter("All");
+        updateBookmarkBadges();
+        renderCafeGrid();
+      }
+
+      // Detail Modal Logic
+      function openDetailModal(id) {
+        const cafe = cafes.find((c) => c.id === id);
+        if (!cafe) return;
+
+        activeSelectedCafeId = id;
+        document.getElementById("detailName").textContent = cafe.name;
+        document.getElementById("detailImage").src = cafe.image;
+        document.getElementById("detailVibeTag").textContent =
+          `${getVibeEmoji(cafe.vibe)} Vibe ${cafe.vibe}`;
+        document.getElementById("detailAreaBadge").textContent = cafe.area;
+        document.getElementById("detailRating").textContent =
+          `${cafe.rating.toFixed(1)} (${cafe.reviewsCount} review)`;
+        document.getElementById("detailHours").textContent = cafe.hours;
+        document.getElementById("detailPrice").textContent = cafe.price;
+        document.getElementById("detailAddress").textContent = cafe.address;
+        document.getElementById("detailReviewText").textContent =
+          `"${cafe.review}"`;
+
+        // Google Maps Link
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cafe.name + " " + cafe.address)}`;
+        document.getElementById("mapsDirectionBtn").href = mapsUrl;
+
+        // Facilities
+        const facContainer = document.getElementById("detailFacilities");
+        facContainer.innerHTML = cafe.facilities
+          .map(
+            (f) => `
+                <span class="px-3 py-1 rounded-xl bg-stone-100 text-stone-700 text-xs font-semibold flex items-center gap-1.5">
+                    <i class="fa-solid fa-check text-emerald-600 text-[10px]"></i> ${f}
+                </span>
+            `,
+          )
+          .join("");
+
+        // Signature Menu
+        const menuContainer = document.getElementById("detailSignatureMenu");
+        menuContainer.innerHTML = cafe.signatureMenu
+          .map(
+            (m) => `
+                <span class="px-3 py-1 rounded-xl bg-amber-100/70 text-amber-900 border border-amber-200/60 text-xs font-bold flex items-center gap-1.5">
+                    <i class="fa-solid fa-utensils text-amber-700 text-[10px]"></i> ${m}
+                </span>
+            `,
+          )
+          .join("");
+
+        updateModalBookmarkButton(id);
+
+        // Animate Modal Open
+        const modal = document.getElementById("detailModal");
+        const content = document.getElementById("detailModalContent");
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          modal.classList.remove("opacity-0");
+          content.classList.remove("scale-95");
+        }, 10);
+      }
+
+      function updateModalBookmarkButton(id) {
+        const isBookmarked = bookmarks.has(id);
+        const icon = document.getElementById("modalBookmarkIcon");
+        const text = document.getElementById("modalBookmarkText");
+
+        if (isBookmarked) {
+          icon.className = "fa-solid fa-bookmark text-amber-600";
+          text.textContent = "Tersimpan";
+        } else {
+          icon.className = "fa-regular fa-bookmark text-stone-600";
+          text.textContent = "Simpan Cafe";
+        }
+      }
+
+      function toggleBookmarkFromModal() {
+        if (activeSelectedCafeId) {
+          toggleBookmark(activeSelectedCafeId);
+        }
+      }
+
+      function closeDetailModal() {
+        const modal = document.getElementById("detailModal");
+        const content = document.getElementById("detailModalContent");
+        modal.classList.add("opacity-0");
+        content.classList.add("scale-95");
+        setTimeout(() => {
+          modal.classList.add("hidden");
+          activeSelectedCafeId = null;
+        }, 300);
+      }
+
+      // Add Review Modal Logic
+      function openAddModal() {
+        const modal = document.getElementById("addModal");
+        const content = document.getElementById("addModalContent");
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          modal.classList.remove("opacity-0");
+          content.classList.remove("scale-95");
+        }, 10);
+      }
+
+      function closeAddModal() {
+        const modal = document.getElementById("addModal");
+        const content = document.getElementById("addModalContent");
+        modal.classList.add("opacity-0");
+        content.classList.add("scale-95");
+        setTimeout(() => {
+          modal.classList.add("hidden");
+          document.getElementById("addCafeForm").reset();
+        }, 300);
+      }
+
+      // Form Submit Handler
+      function handleFormSubmit(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("formName").value.trim();
+        const area = document.getElementById("formArea").value.trim();
+        const vibe = document.getElementById("formVibe").value;
+        const rating = parseFloat(document.getElementById("formRating").value);
+        const price = document.getElementById("formPrice").value;
+        const hours = document.getElementById("formHours").value.trim();
+        let image = document.getElementById("formImage").value.trim();
+        const review = document.getElementById("formReview").value.trim();
+        const menuRaw = document.getElementById("formMenu").value.trim();
+
+        if (!image) {
+          image =
+            "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80";
+        }
+
+        // Facilities Checked
+        const checkboxes = document.querySelectorAll(
+          'input[name="facilities"]:checked',
+        );
+        const facilities = Array.from(checkboxes).map((cb) => cb.value);
+        if (facilities.length === 0) facilities.push("Area AC", "WiFi");
+
+        // Menu Items
+        const signatureMenu = menuRaw
+          ? menuRaw.split(",").map((s) => s.trim())
+          : ["Es Kopi Susu Special", "Croissant"];
+
+        const newCafe = {
+          id: "cafe-" + Date.now(),
+          name: name,
+          area: area,
+          vibe: vibe,
+          rating: rating,
+          reviewsCount: 1,
+          price: price,
+          hours: hours || "09:00 - 22:00 WIB",
+          address: `Area ${area}, Kota Semarang`,
+          image: image,
+          facilities: facilities,
+          signatureMenu: signatureMenu,
+          review: review,
+        };
+
+        // Push to state & save
+        cafes.unshift(newCafe);
+        saveStateToStorage();
+
+        closeAddModal();
+        showToast(`Ulasan '${name}' berhasil ditambahkan! ☕`, "success");
+        renderApp();
+      }
+
+      // Toast Notification Helper
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toastContainer");
+        const toast = document.createElement("div");
+
+        let bgClass = "bg-stone-900 text-white";
+        let iconClass = "fa-check-circle text-emerald-400";
+
+        if (type === "success") {
+          bgClass = "bg-coffee-900 text-white border border-amber-500/30";
+          iconClass = "fa-solid fa-circle-check text-amber-400";
+        } else if (type === "neutral") {
+          bgClass = "bg-stone-800 text-stone-200";
+          iconClass = "fa-solid fa-circle-info text-stone-400";
+        }
+
+        toast.className = `px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-xs font-semibold pointer-events-auto transform translate-y-4 opacity-0 transition-all duration-300 ${bgClass}`;
+        toast.innerHTML = `
+                <i class="${iconClass} text-base"></i>
+                <span>${message}</span>
+            `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+          toast.classList.remove("translate-y-4", "opacity-0");
+        }, 10);
+
+        setTimeout(() => {
+          toast.classList.add("opacity-0", "translate-y-2");
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+      // Close Modal on Backdrop Click
+      document.getElementById("detailModal").addEventListener("click", (e) => {
+        if (e.target.id === "detailModal") closeDetailModal();
+      });
+      document.getElementById("addModal").addEventListener("click", (e) => {
+        if (e.target.id === "addModal") closeAddModal();
+      });
+    </script>
+  </body>
+</html>
